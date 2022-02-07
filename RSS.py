@@ -12,7 +12,6 @@ my_conn= mysql.connector.connect(user='root', password='rootroot',
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
         self.title_font = tkfont.Font(family='Helvetica', size=15, weight="bold", slant="italic")
 
         
@@ -395,4 +394,6 @@ class PageFive(tk.Frame):
         button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
-
+if __name__ == "__main__":
+    app = SampleApp()
+    app.mainloop()
