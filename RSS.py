@@ -12,6 +12,8 @@ my_conn= mysql.connector.connect(user='root', password='rootroot',
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+        self.title('RRS')
+        self.geometry('1200x650')
         self.title_font = tkfont.Font(family='Helvetica', size=15, weight="bold", slant="italic")
 
         
