@@ -47,15 +47,15 @@ class StartPage(tk.Frame):
         label = tk.Label(self, text="Railway Reservation System", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Retrive Info by Name",width=25,highlightbackground='#00cec9',
+        button1 = tk.Button(self, text="Retrieve Info by Name",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageOne"))
-        button2 = tk.Button(self, text="Retrive Info by Age",width=25,highlightbackground='#00cec9',
+        button2 = tk.Button(self, text="Retrieve Info by Age",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageTwo"))
-        button3 = tk.Button(self, text="Retrive no.of passengers",width=25,highlightbackground='#00cec9',
+        button3 = tk.Button(self, text="Retrieve no.of passengers",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageThree"))
-        button4 = tk.Button(self, text="Retrive bookings by date",width=25,highlightbackground='#00cec9',
+        button4 = tk.Button(self, text="Retrieve bookings by date",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageFour"))
-        button5 = tk.Button(self, text="Retrive bookings by Train name",width=25,highlightbackground='#00cec9',
+        button5 = tk.Button(self, text="Retrieve bookings by Train name",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageFive"))
         button6 = tk.Button(self, text="Make a reservation",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageSix"))
@@ -233,17 +233,18 @@ class PageThree(tk.Frame):
         
 
         
-        query=("SELECT Train.TrainNum, count(Passenger.firstName) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum group by Train.TrainNum;")
+        query=("SELECT Train.TrainNum, Passenger.DOJ,count(Passenger.firstName) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum group by Train.TrainNum,Passenger.DOJ order by Passenger.TrainNum;")
         cursor.execute(query)
         myresult = cursor.fetchall()
         
         
         res = [list(ele) for ele in myresult]
         if myresult!=None:
-            columns = ('TrainNum', 'Count')
+            columns = ('TrainNum', 'DOJ','Count')
             self.tree = ttk.Treeview(self, columns=columns, show='headings')
             self.tree.pack()
             self.tree.heading('TrainNum', text='Train number')
+            self.tree.heading('DOJ',text='DOJ')
             self.tree.heading('Count', text='Count')
             
             for i in res:
