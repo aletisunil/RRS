@@ -1,4 +1,3 @@
-from cgitb import text
 import tkinter as tk
 from tkinter import ttk
 import mysql.connector                
@@ -48,19 +47,19 @@ class StartPage(tk.Frame):
         label = tk.Label(self, text="Railway Reservation System", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Retrive Info by Name",width=25,
+        button1 = tk.Button(self, text="Retrive Info by Name",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageOne"))
-        button2 = tk.Button(self, text="Retrive Info by Age",width=25,
+        button2 = tk.Button(self, text="Retrive Info by Age",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageTwo"))
-        button3 = tk.Button(self, text="Retrive no.of passengers",width=25,
+        button3 = tk.Button(self, text="Retrive no.of passengers",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageThree"))
-        button4 = tk.Button(self, text="Retrive bookings by date",width=25,
+        button4 = tk.Button(self, text="Retrive bookings by date",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageFour"))
-        button5 = tk.Button(self, text="Retrive bookings by Train name",width=25,
+        button5 = tk.Button(self, text="Retrive bookings by Train name",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageFive"))
-        button6 = tk.Button(self, text="Make a reservation",width=25,
+        button6 = tk.Button(self, text="Make a reservation",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageSix"))
-        button7 = tk.Button(self, text="Cancel a reservation",width=25,
+        button7 = tk.Button(self, text="Cancel a reservation",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageSeven"))
         button1.pack(side='top',pady=8)
         button2.pack(side='top',pady=8)
@@ -268,7 +267,7 @@ class PageFour(tk.Frame):
         label = tk.Label(self, text="Enter Date to retrieve bookings", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
         
-        Label1=tk.Label(self, text="Date")
+        Label1=tk.Label(self, text="Date (YYYY-MM-DD)")
         Label1.pack(side="top")
         Entry1=tk.Entry(self)
         Entry1.pack(side="top")
@@ -468,12 +467,35 @@ class PageSix(tk.Frame):
             value=(Entry1.get(),Entry2.get(),Entry3.get(),Entry4.get(),temp,int(clicked1.get()),Entry7.get(),clicked2.get())
             cursor.execute(query, value)
             my_conn.commit()
-
             print(cursor.rowcount, "record inserted.")
+            
+            query3= ("select count(*) from Passenger where TrainNum='{0}' and DOJ='{1}' and status='Confirmed';").format(int(clicked1.get()),Entry7.get())
+            cursor.execute(query3)
+            result3=cursor.fetchall()
+            noOfSeats=int(result3[0][0])
+            
+            query2=("SELECT EXISTS(SELECT * from trainStatus WHERE TrainNum='{0}' and DOJ='{1}');").format(int(clicked1.get()),Entry7.get())
+            cursor.execute(query2)
+            result2=cursor.fetchall()
+            opt=int(result2[0][0])
+            if opt==0:
+                query1="INSERT INTO trainStatus values(%s,%s,%s,%s)"
+                seatsavailable=20-noOfSeats
+                value1=(int(clicked1.get()),Entry7.get(),seatsavailable,noOfSeats)    
+                cursor.execute(query1, value1)
+                my_conn.commit()
+            elif opt==1:
+                sql3 = ("UPDATE trainStatus SET seatsAvailable = %s and seatsOccupied= %s where TrainNum= %s and DOJ= %s")
+                val3=(int(20-noOfSeats),int(noOfSeats),int(clicked1.get()),Entry7.get())
+                cursor.execute(sql3,val3)
+                my_conn.commit()
+            
+
+
             query=("select * from Passenger")
             cursor.execute(query)
             myresult = cursor.fetchall()
-            print(myresult)
+            
             res = [list(ele) for ele in myresult]
             if myresult!=None:
                 columns = ('firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
@@ -553,21 +575,18 @@ class PageSeven(tk.Frame):
             cursor.execute(sql)
             my_conn.commit()
             print(cursor.rowcount, "record(s) deleted")
-            """
-            result = cursor.fetchall()
-            seats=int(result[0][0])
-        
-            if seats<=10:
-                temp='Confirmed'
-            else:    
-                temp='Waiting'
-            query="INSERT INTO Passenger values(%s,%s,%s,%s,%s,%s,%s,%s)"
-            value=(Entry1.get(),Entry2.get(),Entry3.get(),Entry4.get(),temp,int(clicked1.get()),Entry7.get(),clicked2.get())
-            cursor.execute(query, value)
-            my_conn.commit()
 
-            print(cursor.rowcount, "record inserted.")
-            query=("select * from Passenger")
+            waitingquery=("SELECT count(Passenger.status) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Passenger.status='waiting' and Passenger.trainNum='{0}' and Passenger.DOJ='{1}';").format(clicked1.get(),Entry7.get())
+            cursor.execute(waitingquery)
+            myresult1 = cursor.fetchall()
+            if int(myresult1[0][0]) >0:
+                sql2 = ("UPDATE Passenger SET status = 'Confirmed' WHERE status = 'Waiting' and trainNum='{0}' and DOJ='{1}' LIMIT 1;").format(clicked1.get(),Entry7.get())
+                cursor.execute(sql2)
+                my_conn.commit()
+                print(cursor.rowcount, "record(s) updated")
+
+            
+            query=("select * from Passenger where trainNum='{0}' and DOJ='{1}'").format(clicked1.get(),Entry7.get())
             cursor.execute(query)
             myresult = cursor.fetchall()
             print(myresult)
@@ -591,7 +610,7 @@ class PageSeven(tk.Frame):
                 self.tree = ttk.Treeview(self)
                 self.tree.pack()
                 self.tree.insert('', 'end', text=" No Records found here ")
-        """
+        
         def delete():
             self.tree.destroy()    
         button3=tk.Button(self, text="Submit",command=lambda:cancel())
