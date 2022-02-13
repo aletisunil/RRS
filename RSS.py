@@ -124,12 +124,12 @@ class PageOne(tk.Frame):
                 self.tree.insert('', 'end', text=" No Records found here ")
                     
 
-        button3=tk.Button(self, text="Submit",command=lambda:infoByName())
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoByName())
         button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
-        button.pack(side="bottom")
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
+        button.pack(side="top",pady=20)
 
 
 class PageTwo(tk.Frame):
@@ -204,12 +204,12 @@ class PageTwo(tk.Frame):
         
             
         
-        button3=tk.Button(self, text="Submit",command=lambda:infoByAge())
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoByAge())
         button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda:controller.show_frame("StartPage"))
-        button.pack(side='bottom')
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda:controller.show_frame("StartPage"))
+        button.pack(side='top')
        
        
 
@@ -256,7 +256,7 @@ class PageThree(tk.Frame):
                 self.tree.insert('', 'end', text=" No Records found here ")
         
         
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
 class PageFour(tk.Frame):
@@ -300,11 +300,11 @@ class PageFour(tk.Frame):
                 self.tree.pack()
                 self.tree.insert('', 'end', text=" No Records found here ")
            
-        button3=tk.Button(self, text="Submit",command=lambda:infoDay())
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoDay())
         button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
 
@@ -370,11 +370,11 @@ class PageFive(tk.Frame):
                 
                 self.tree.insert('', 'end', text=" No Records found here ")
            
-        button3=tk.Button(self, text="Submit",command=lambda:infoTrainName())
-        button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
-        button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoTrainName())
+        button3.pack(side='top',pady=14)
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
+        button4.pack(side='top',pady=14)
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
 class PageSix(tk.Frame):
@@ -519,11 +519,11 @@ class PageSix(tk.Frame):
         
         def delete():
             self.tree.destroy()    
-        button3=tk.Button(self, text="Submit",command=lambda:booking())
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:booking())
         button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
 class PageSeven(tk.Frame):
@@ -613,11 +613,11 @@ class PageSeven(tk.Frame):
         
         def delete():
             self.tree.destroy()    
-        button3=tk.Button(self, text="Submit",command=lambda:cancel())
+        button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:cancel())
         button3.pack(side='top')
-        button4=tk.Button(self, text="clear",command=lambda:delete())
+        button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
-        button = tk.Button(self, text="Home Page",command=lambda: controller.show_frame("StartPage"))
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
         
 if __name__ == "__main__":
