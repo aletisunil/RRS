@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-import mysql.connector                
+import mysql.connector   
+import math
+import random             
 from tkinter import font  as tkfont 
 
 
@@ -324,17 +326,17 @@ class PageFive(tk.Frame):
   
         # Dropdown menu options
         options = [
-            "AUHO",
-            "CHHY",
-            "CHNY",
-            "NYCH",
-            "SASA"
+            "Orient Express",
+            "Flying Scotsman",
+            "Golden Arrow",
+            "Golden Chariot",
+            "Maharaja Express"
         ]
         
         
        
         clicked = tk.StringVar()
-        clicked.set( "AUHO" )
+        clicked.set( "Orient Express" )
         
         # Create Dropdown menu
         drop = tk.OptionMenu( self , clicked , *options )
@@ -414,17 +416,17 @@ class PageSix(tk.Frame):
         Label6=tk.Label(self, text="TrainNum")
         Label6.pack(side="top")
         options1 = [
-            "456",
-            "789",
-            "123",
-            "111",
-            "222"
+            "001",
+            "002",
+            "003",
+            "004",
+            "005"
         ] 
         # datatype of menu text
         clicked1 = tk.StringVar()
         
         # initial menu text
-        clicked1.set("456")
+        clicked1.set("001")
         
         # Create Dropdown menu
         drop1 = tk.OptionMenu( self , clicked1 , *options1 )
@@ -464,8 +466,9 @@ class PageSix(tk.Frame):
                 temp='Confirmed'
             else:    
                 temp='Waiting'
-            query="INSERT INTO Passenger values(%s,%s,%s,%s,%s,%s,%s,%s)"
-            value=(Entry1.get(),Entry2.get(),Entry3.get(),Entry4.get(),temp,int(clicked1.get()),Entry7.get(),clicked2.get())
+            query="INSERT INTO Passenger values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            temp1='RRS'+str(math.floor(random.randint(2,100)*(1000-100)+100))
+            value=(temp1,Entry1.get(),Entry2.get(),Entry3.get(),Entry4.get(),temp,int(clicked1.get()),Entry7.get(),clicked2.get())
             cursor.execute(query, value)
             my_conn.commit()
             print(cursor.rowcount, "record inserted.")
@@ -499,9 +502,10 @@ class PageSix(tk.Frame):
             
             res = [list(ele) for ele in myresult]
             if myresult!=None:
-                columns = ('firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
+                columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
+                self.tree.heading('id', text='Id')
                 self.tree.heading('firstName', text='First Name')
                 self.tree.heading('lastName', text='Last Name')
                 self.tree.heading('Age', text='Age')
@@ -535,67 +539,45 @@ class PageSeven(tk.Frame):
         label = tk.Label(self, text="Cancel a ticket", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
         
-        Label1=tk.Label(self, text="First name")
+        Label1=tk.Label(self, text="ID")
         Label1.pack(side="top")
         Entry1=tk.Entry(self)
         Entry1.pack(side="top")
 
-        Label2=tk.Label(self, text="Last name")
-        Label2.pack(side="top")
-        Entry2=tk.Entry(self)
-        Entry2.pack(side="top")
-
-        Label6=tk.Label(self, text="TrainNum")
-        Label6.pack(side="top")
-        options1 = [
-            "456",
-            "789",
-            "123",
-            "111",
-            "222"
-        ] 
-        # datatype of menu text
-        clicked1 = tk.StringVar()
         
-        # initial menu text
-        clicked1.set("456")
-        
-        # Create Dropdown menu
-        drop1 = tk.OptionMenu( self , clicked1 , *options1 )
-        drop1.pack(side='top')
-
-        Label7=tk.Label(self, text="DOJ")
-        Label7.pack(side="top")
-        Entry7=tk.Entry(self)
-        Entry7.pack(side="top")
 
        
         def cancel():
             cursor = my_conn.cursor()
-            sql = ("DELETE FROM Passenger where firstName='{0}' and lastName='{1}' and trainNum='{2}' and DOJ='{3}';").format(Entry1.get(),Entry2.get(),clicked1.get(),Entry7.get())
+            tempquery=("select * from Passenger where id='{0}'").format(Entry1.get())
+            cursor.execute(tempquery)
+            tempquery1=cursor.fetchall()
+            tmpid,tmpfrstName,tmplastName,tmpAge,tmpAddress,tmpStatus,tmpTrainNum,tmpDate,tmpCategory=tempquery1[0]
+            sql = ("DELETE FROM Passenger where id='{0}';").format(Entry1.get())
             cursor.execute(sql)
             my_conn.commit()
             print(cursor.rowcount, "record(s) deleted")
 
-            waitingquery=("SELECT count(Passenger.status) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Passenger.status='waiting' and Passenger.trainNum='{0}' and Passenger.DOJ='{1}';").format(clicked1.get(),Entry7.get())
+            waitingquery=("SELECT count(Passenger.status) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Passenger.status='waiting' and Passenger.trainNum='{0}' and Passenger.DOJ='{1}';").format(tmpTrainNum,tmpDate)
             cursor.execute(waitingquery)
             myresult1 = cursor.fetchall()
             if int(myresult1[0][0]) >0:
-                sql2 = ("UPDATE Passenger SET status = 'Confirmed' WHERE status = 'Waiting' and trainNum='{0}' and DOJ='{1}' LIMIT 1;").format(clicked1.get(),Entry7.get())
+                sql2 = ("UPDATE Passenger SET status = 'Confirmed' WHERE status = 'Waiting' and trainNum='{0}' and DOJ='{1}' LIMIT 1;").format(tmpTrainNum,tmpDate)
                 cursor.execute(sql2)
                 my_conn.commit()
                 print(cursor.rowcount, "record(s) updated")
 
             
-            query=("select * from Passenger where trainNum='{0}' and DOJ='{1}'").format(clicked1.get(),Entry7.get())
+            query=("select * from Passenger where trainNum='{0}' and DOJ='{1}'").format(tmpTrainNum,tmpDate)
             cursor.execute(query)
             myresult = cursor.fetchall()
             print(myresult)
             res = [list(ele) for ele in myresult]
             if myresult!=None:
-                columns = ('firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
+                columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
+                self.tree.heading('id', text='ID')
                 self.tree.heading('firstName', text='First Name')
                 self.tree.heading('lastName', text='Last Name')
                 self.tree.heading('Age', text='Age')
