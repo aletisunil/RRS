@@ -16,8 +16,6 @@ class SampleApp(tk.Tk):
         self.title('RRS')
         self.geometry('1200x650')
         self.title_font = tkfont.Font(family='Helvetica', size=15, weight="bold", slant="italic")
-
-        
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
@@ -232,33 +230,35 @@ class PageThree(tk.Frame):
         def delete():
             self.tree.destroy()   
         
-        
-
-        
-        query=("SELECT Train.TrainNum, Passenger.DOJ,count(Passenger.firstName) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum group by Train.TrainNum,Passenger.DOJ order by Passenger.TrainNum;")
-        cursor.execute(query)
-        myresult = cursor.fetchall()
+        def infoPassenger():
+            query=("SELECT Train.TrainNum, Passenger.DOJ,count(Passenger.firstName) FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum group by Train.TrainNum,Passenger.DOJ order by Passenger.TrainNum;")
+            cursor.execute(query)
+            myresult = cursor.fetchall()
         
         
-        res = [list(ele) for ele in myresult]
-        if myresult!=None:
-            columns = ('TrainNum', 'DOJ','Count')
-            self.tree = ttk.Treeview(self, columns=columns, show='headings')
-            self.tree.pack()
-            self.tree.heading('TrainNum', text='Train number')
-            self.tree.heading('DOJ',text='DOJ')
-            self.tree.heading('Count', text='Count')
-            
-            for i in res:
-                self.tree.insert('', tk.END, values=i)
-    
-        else:
+            res = [list(ele) for ele in myresult]
+            if myresult!=None:
+                columns = ('TrainNum', 'DOJ','Count')
+                self.tree = ttk.Treeview(self, columns=columns, show='headings')
+                self.tree.pack()
+                self.tree.heading('TrainNum', text='Train number')
+                self.tree.heading('DOJ',text='DOJ')
+                self.tree.heading('Count', text='Count')
                 
+                for i in res:
+                    self.tree.insert('', tk.END, values=i)
+    
+            else:
+                    
                 self.tree = ttk.Treeview(self)
                 self.tree.pack()
                 self.tree.insert('', 'end', text=" No Records found here ")
         
         
+        button11=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoPassenger())
+        button11.pack(side='top')
+        button12=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
+        button12.pack(side='top')
         button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
@@ -284,9 +284,10 @@ class PageFour(tk.Frame):
             print(myresult)
             res = [list(ele) for ele in myresult]
             if myresult!=None:
-                columns = ('firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
+                columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
+                self.tree.heading('id', text='ID')
                 self.tree.heading('firstName', text='First Name')
                 self.tree.heading('lastName', text='Last Name')
                 self.tree.heading('Age', text='Age')
@@ -346,7 +347,7 @@ class PageFive(tk.Frame):
         def delete():
             self.tree.destroy()   
         def infoTrainName():
-            query=("SELECT Passenger.firstName, Passenger.lastName, Passenger.Age,Passenger.Address, Passenger.DOJ, Passenger.category FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Train.TrainName='{0}' and Passenger.status='confirmed';").format(clicked.get())
+            query=("SELECT Passenger.id, Passenger.firstName, Passenger.lastName, Passenger.Age,Passenger.Address, Passenger.DOJ, Passenger.category FROM Passenger INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Train.TrainName='{0}' and Passenger.status='confirmed';").format(clicked.get())
             cursor.execute(query)
             myresult = cursor.fetchall()
             print(myresult)
@@ -354,9 +355,10 @@ class PageFive(tk.Frame):
             
             res = [list(ele) for ele in myresult]
             if myresult!=None:
-                columns = ('firstName', 'lastName', 'Age','Address','DOJ','category')
+                columns = ('id','firstName', 'lastName', 'Age','Address','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
+                self.tree.heading('id', text='ID')
                 self.tree.heading('firstName', text='First Name')
                 self.tree.heading('lastName', text='Last Name')
                 self.tree.heading('Age', text='Age')
@@ -543,10 +545,6 @@ class PageSeven(tk.Frame):
         Label1.pack(side="top")
         Entry1=tk.Entry(self)
         Entry1.pack(side="top")
-
-        
-
-       
         def cancel():
             cursor = my_conn.cursor()
             tempquery=("select * from Passenger where id='{0}'").format(Entry1.get())
