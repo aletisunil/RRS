@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import mysql.connector   
-import math
-import random             
+import uuid           
 from tkinter import font  as tkfont 
 
 
@@ -152,16 +151,9 @@ class PageTwo(tk.Frame):
 
         cursor = my_conn.cursor()
         
-        
-        
         def delete():
             self.tree.destroy()
-              
-            
-        
        
-        
-        
         def infoByAge():
             query=("""SELECT Train.TrainNum, Train.TrainName, Train.Source, Train.Dest, Passenger.firstName, Passenger.Address, Passenger.category, Passenger.status FROM Passenger
                   INNER JOIN Train ON Passenger.TrainNum=Train.TrainNum where Passenger.Age between '{0}' and '{1}';""").format(int(Entry1.get()),int(Entry2.get()))
@@ -194,15 +186,6 @@ class PageTwo(tk.Frame):
                 self.tree.insert('', 'end', text=" No Records found here ")
                 
                 
-                
-                
-            
-                
-        
-                
-        
-        
-            
         
         button3=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoByAge())
         button3.pack(side='top')
@@ -283,7 +266,7 @@ class PageFour(tk.Frame):
             myresult = cursor.fetchall()
             print(myresult)
             res = [list(ele) for ele in myresult]
-            if myresult!=None:
+            if len(myresult)!=0:
                 columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
@@ -354,7 +337,7 @@ class PageFive(tk.Frame):
             
             
             res = [list(ele) for ele in myresult]
-            if myresult!=None:
+            if len(myresult)!=0:
                 columns = ('id','firstName', 'lastName', 'Age','Address','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
@@ -469,7 +452,7 @@ class PageSix(tk.Frame):
             else:    
                 temp='Waiting'
             query="INSERT INTO Passenger values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            temp1='RRS'+str(math.floor(random.randint(2,100)*(1000-100)+100))
+            temp1=(str(uuid.uuid4())[:8])
             value=(temp1,Entry1.get(),Entry2.get(),Entry3.get(),Entry4.get(),temp,int(clicked1.get()),Entry7.get(),clicked2.get())
             cursor.execute(query, value)
             my_conn.commit()
@@ -503,7 +486,7 @@ class PageSix(tk.Frame):
             myresult = cursor.fetchall()
             
             res = [list(ele) for ele in myresult]
-            if myresult!=None:
+            if len(myresult)!=0:
                 columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
@@ -571,7 +554,7 @@ class PageSeven(tk.Frame):
             myresult = cursor.fetchall()
             print(myresult)
             res = [list(ele) for ele in myresult]
-            if myresult!=None:
+            if len(myresult)!=0:
                 columns = ('id','firstName', 'lastName', 'Age','Address','status','TrainNum','DOJ','category')
                 self.tree = ttk.Treeview(self, columns=columns, show='headings')
                 self.tree.pack()
