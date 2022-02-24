@@ -19,10 +19,8 @@ class SampleApp(tk.Tk):
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-        
-
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo,PageThree,PageFour,PageFive,PageSix,PageSeven):
+        for F in (StartPage, PageOne, PageTwo,PageThree,PageFour,PageFive,PageSix,PageSeven,PageEight):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -60,6 +58,8 @@ class StartPage(tk.Frame):
                             command=lambda: controller.show_frame("PageSix"))
         button7 = tk.Button(self, text="Cancel a reservation",width=25,highlightbackground='#00cec9',
                             command=lambda: controller.show_frame("PageSeven"))
+        button8 = tk.Button(self, text="Get passenger list",width=25,highlightbackground='#5603AD',
+                            command=lambda: controller.show_frame("PageEight"))
         button1.pack(side='top',pady=8)
         button2.pack(side='top',pady=8)
         button3.pack(side='top',pady=8)
@@ -67,6 +67,7 @@ class StartPage(tk.Frame):
         button5.pack(side='top',pady=8)
         button6.pack(side='top',pady=8)
         button7.pack(side='top',pady=8)
+        button8.pack(side='top',pady=8)
         
         
 
@@ -92,9 +93,6 @@ class PageOne(tk.Frame):
         def delete():
             self.tree.destroy()   
     
-            
-        
-        
         def infoByName():
             query="SELECT * FROM  Passenger where firstName='{0}' and lastName='{1}'".format(Entry1.get(),Entry2.get())
             cursor.execute(query)
@@ -238,7 +236,7 @@ class PageThree(tk.Frame):
                 self.tree.insert('', 'end', text=" No Records found here ")
         
         
-        button11=tk.Button(self, text="Submit",highlightbackground='#6c5ce7',command=lambda:infoPassenger())
+        button11=tk.Button(self, text="Click to retrieve info",highlightbackground='#6c5ce7',command=lambda:infoPassenger())
         button11.pack(side='top')
         button12=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button12.pack(side='top')
@@ -581,6 +579,61 @@ class PageSeven(tk.Frame):
         button3.pack(side='top')
         button4=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
         button4.pack(side='top')
+        button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
+        button.pack()
+
+class PageEight(tk.Frame):
+    
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="Get Passengers list", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        
+        
+        cursor = my_conn.cursor()
+        
+        
+        
+        def delete():
+            self.tree.destroy()   
+        
+        def infoPassengerList():
+            query=("SELECT * FROM Passenger order by TrainNum,DOJ;")
+            cursor.execute(query)
+            myresult = cursor.fetchall()
+        
+        
+            res = [list(ele) for ele in myresult]
+            if len(myresult)!=0:
+                columns = ('TrainNum', 'DOJ','Count')
+                columns=('id','firstName','lastName','Age','Address','status','TrainNum','DOJ','category')
+                self.tree = ttk.Treeview(self, columns=columns, show='headings')
+                self.tree.pack()
+                self.tree.heading('id', text='Id')
+                self.tree.heading('firstName',text='First Name')
+                self.tree.heading('lastName', text='Last Name')
+                self.tree.heading('Age', text='Age')
+                self.tree.heading('Address',text='Address')
+                self.tree.heading('status', text='Status')
+                self.tree.heading('TrainNum', text='Train Number')
+                self.tree.heading('DOJ',text='DOJ')
+                self.tree.heading('category', text='Category')
+                
+                for i in res:
+                    self.tree.insert('', tk.END, values=i)
+    
+            else:
+                    
+                self.tree = ttk.Treeview(self)
+                self.tree.pack()
+                self.tree.insert('', 'end', text=" No Records found here ")
+        
+        
+        button11=tk.Button(self, text="Get passenger list",highlightbackground='#00cec9',command=lambda:infoPassengerList())
+        button11.pack(side='top')
+        button12=tk.Button(self, text="clear",highlightbackground='#636e72',command=lambda:delete())
+        button12.pack(side='top')
         button = tk.Button(self, text="Home Page",highlightbackground='#273c75',command=lambda: controller.show_frame("StartPage"))
         button.pack()
         
