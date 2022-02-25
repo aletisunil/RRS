@@ -390,12 +390,6 @@ class PageSix(tk.Frame):
         Label4.pack(side="top")
         Entry4=tk.Entry(self)
         Entry4.pack(side="top")
-        """
-        Label5=tk.Label(self, text="status")
-        Label5.pack(side="top")
-        Entry5=tk.Entry(self)
-        Entry5.pack(side="top")
-        """
         Label6=tk.Label(self, text="TrainNum")
         Label6.pack(side="top")
         options1 = [
@@ -405,7 +399,7 @@ class PageSix(tk.Frame):
             "004",
             "005"
         ] 
-        # datatype of menu text
+       
         clicked1 = tk.StringVar()
         
         # initial menu text
@@ -541,12 +535,11 @@ class PageSeven(tk.Frame):
             cursor.execute(waitingquery)
             myresult1 = cursor.fetchall()
             if int(myresult1[0][0]) >0:
-                sql2 = ("UPDATE Passenger SET status = 'Confirmed' WHERE status = 'Waiting' and trainNum='{0}' and DOJ='{1}' LIMIT 1;").format(tmpTrainNum,tmpDate)
+                sql2 = ("UPDATE Passenger SET status = 'Confirmed' WHERE status = 'Waiting' and trainNum='{0}' and DOJ='{1}' and category='{2}' LIMIT 1;").format(tmpTrainNum,tmpDate,tmpCategory)
                 cursor.execute(sql2)
                 my_conn.commit()
                 print(cursor.rowcount, "record(s) updated")
 
-            
             query=("select * from Passenger where trainNum='{0}' and DOJ='{1}'").format(tmpTrainNum,tmpDate)
             cursor.execute(query)
             myresult = cursor.fetchall()
